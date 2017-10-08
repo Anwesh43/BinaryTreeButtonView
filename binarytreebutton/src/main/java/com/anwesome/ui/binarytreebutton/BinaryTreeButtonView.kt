@@ -9,15 +9,17 @@ import java.util.concurrent.ConcurrentLinkedQueue
 /**
  * Created by anweshmishra on 09/10/17.
  */
-class BinaryTreeButtonView(ctx:Context,var maxN:Int=4):View(ctx) {
+class BinaryTreeButtonView(ctx:Context,var maxN:Int=4,var listenerers:LinkedList<()->Unit> = LinkedList()):View(ctx) {
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    val renderer = BinaryTreeRenderer(this)
     override fun onDraw(canvas:Canvas) {
-
+        canvas.drawColor(Color.parseColor("#212121"))
+        renderer.render(canvas,paint)
     }
     override fun onTouchEvent(event:MotionEvent):Boolean {
         when(event.action) {
             MotionEvent.ACTION_DOWN -> {
-
+                renderer.handleTap(event.x,event.y)
             }
         }
         return true
@@ -141,6 +143,23 @@ class BinaryTreeButtonView(ctx:Context,var maxN:Int=4):View(ctx) {
                 animated = true
                 view.postInvalidate()
             })
+        }
+    }
+    class BinaryTreeRenderer(var view:BinaryTreeButtonView,var time:Int = 0) {
+        var animator:BinaryTreeAnimator?=null
+        fun render(canvas:Canvas,paint:Paint) {
+            if(time == 0) {
+                val w = canvas.width.toFloat()
+                val h = canvas.height.toFloat()
+                var binaryTree = BinaryTree(w,h,view.listenerers,view.maxN)
+                animator = BinaryTreeAnimator(binaryTree,view)
+            }
+            animator?.draw(canvas,paint)
+            animator?.update()
+            time++
+        }
+        fun handleTap(x:Float,y:Float) {
+            animator?.handleTap(x,y)
         }
     }
 }
