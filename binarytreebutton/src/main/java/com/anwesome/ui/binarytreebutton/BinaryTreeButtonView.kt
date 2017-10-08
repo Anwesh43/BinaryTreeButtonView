@@ -36,10 +36,23 @@ class BinaryTreeButtonView(ctx:Context,var maxN:Int=4,var n:Int = 0):View(ctx) {
         fun update() {
 
         }
-        fun stopped():Boolean = true
-        fun startUpdating() {
-
+        fun stopped():Boolean {
+            val condition = true
+            if(condition) {
+                listener.invoke()
+            }
+            return condition
         }
         fun handleTap(x:Float,y:Float):Boolean = x>=this.x-r && x<=this.x+r && y>=this.y-r && y<=this.y+r
+    }
+    data class BinaryTreeState(var scale:Float = 0f,var deg:Float = 0f) {
+        fun update() {
+            scale = Math.sin(deg*Math.PI/180).toFloat()
+            deg += 4.5f
+            if(deg > 180f) {
+                deg = 0f
+            }
+        }
+        fun stopped():Boolean = deg == 0f
     }
 }
