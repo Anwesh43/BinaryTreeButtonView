@@ -1,5 +1,6 @@
 package com.anwesome.ui.binarytreebutton
 
+import android.app.Activity
 import android.content.Context
 import android.view.*
 import android.graphics.*
@@ -160,6 +161,31 @@ class BinaryTreeButtonView(ctx:Context,var maxN:Int=4,var listenerers:LinkedList
         }
         fun handleTap(x:Float,y:Float) {
             animator?.handleTap(x,y)
+        }
+    }
+    companion object{
+        var view:BinaryTreeButtonView?=null
+        var added = false
+        var parent:Activity?=null
+        fun create(activity:Activity,vararg maxN:Int) {
+            if(!added) {
+                view = BinaryTreeButtonView(activity)
+                if(maxN.size == 1) {
+                    view?.maxN = maxN[0]
+                }
+                parent = activity
+            }
+        }
+        fun addListener(listener:()->Unit) {
+            if(!added) {
+                view?.listenerers?.add(listener)
+            }
+        }
+        fun show() {
+            if(!added) {
+                parent?.setContentView(view)
+                added = true
+            }
         }
     }
 }
