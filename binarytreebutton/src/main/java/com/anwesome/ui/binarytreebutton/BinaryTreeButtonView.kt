@@ -120,4 +120,27 @@ class BinaryTreeButtonView(ctx:Context,var maxN:Int=4):View(ctx) {
             }
         }
     }
+    class BinaryTreeAnimator(var binaryTree:BinaryTree,var view:BinaryTreeButtonView,var animated:Boolean = false) {
+        fun update() {
+            if(animated) {
+                binaryTree.update{animated = false}
+                try {
+                    Thread.sleep(50)
+                    view.invalidate()
+                }
+                catch(ex:Exception) {
+
+                }
+            }
+        }
+        fun draw(canvas:Canvas,paint:Paint) {
+            binaryTree.draw(canvas,paint)
+        }
+        fun handleTap(x:Float,y:Float) {
+            binaryTree.handleTap(x,y,{
+                animated = true
+                view.postInvalidate()
+            })
+        }
+    }
 }
