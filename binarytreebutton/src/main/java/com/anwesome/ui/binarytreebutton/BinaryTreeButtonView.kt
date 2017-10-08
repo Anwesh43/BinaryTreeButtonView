@@ -19,7 +19,7 @@ class BinaryTreeButtonView(ctx:Context,var maxN:Int=4,var n:Int = 0):View(ctx) {
         }
         return true
     }
-    data class BinaryTreeButton(var x:Float,var y:Float,var r:Float,var listener:()->Unit) {
+    data class BinaryTreeButton(var x:Float,var y:Float,var r:Float,var listener:()->Unit,var state:) {
         fun draw(canvas:Canvas,paint:Paint) {
             canvas.save()
             canvas.translate(x,y)
@@ -28,16 +28,16 @@ class BinaryTreeButtonView(ctx:Context,var maxN:Int=4,var n:Int = 0):View(ctx) {
             var color = Color.GRAY
             paint.color = Color.argb(120,Color.red(color),Color.green(color),Color.blue(color))
             canvas.save()
-            canvas.scale(1f,1f)
+            canvas.scale(state.scale,state.scale)
             canvas.drawCircle(0f,0f,r,paint)
             canvas.restore()
             canvas.restore()
         }
         fun update() {
-
+            state.update()
         }
         fun stopped():Boolean {
-            val condition = true
+            val condition = state.stopped()
             if(condition) {
                 listener.invoke()
             }
