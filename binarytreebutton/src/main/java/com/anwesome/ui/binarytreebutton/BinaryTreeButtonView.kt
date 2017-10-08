@@ -25,7 +25,7 @@ class BinaryTreeButtonView(ctx:Context,var maxN:Int=4,var listenerers:LinkedList
         }
         return true
     }
-    data class BinaryTreeButton(var x:Float,var y:Float,var r:Float,var listener:()->Unit,var state:BinaryTreeState = BinaryTreeState()) {
+    data class BinaryTreeButton(var x:Float,var y:Float,var gap:Float,var r:Float,var listener:()->Unit,var state:BinaryTreeState = BinaryTreeState()) {
         var left:BinaryTreeButton?=null
         var right:BinaryTreeButton?=null
         fun draw(canvas:Canvas,paint:Paint) {
@@ -34,7 +34,7 @@ class BinaryTreeButtonView(ctx:Context,var maxN:Int=4,var listenerers:LinkedList
             paint.color = Color.GREEN
             canvas.drawCircle(0f,0f,r,paint)
             var color = Color.GRAY
-            paint.color = Color.argb(120,Color.red(color),Color.green(color),Color.blue(color))
+            paint.color = Color.argb(200,Color.red(color),Color.green(color),Color.blue(color))
             canvas.save()
             canvas.scale(state.scale,state.scale)
             canvas.drawCircle(0f,0f,r,paint)
@@ -42,10 +42,10 @@ class BinaryTreeButtonView(ctx:Context,var maxN:Int=4,var listenerers:LinkedList
             canvas.restore()
         }
         fun addLeft(newListener:()->Unit,h:Float) {
-            left = BinaryTreeButton(x-2*r,y+h,r,newListener)
+            left = BinaryTreeButton(x-gap,y+h,gap*0.5f,r,newListener)
         }
         fun addRight(newListener:()->Unit,h:Float) {
-            right = BinaryTreeButton(x+2*r,y+h,r,newListener)
+            right = BinaryTreeButton(x+gap,y+h,gap*0.5f,r,newListener)
         }
         fun update() {
             state.update()
@@ -62,7 +62,7 @@ class BinaryTreeButtonView(ctx:Context,var maxN:Int=4,var listenerers:LinkedList
     data class BinaryTreeState(var scale:Float = 0f,var deg:Float = 0f) {
         fun update() {
             scale = Math.sin(deg*Math.PI/180).toFloat()
-            deg += 4.5f
+            deg += 9f
             if(deg > 180f) {
                 deg = 0f
             }
@@ -73,9 +73,9 @@ class BinaryTreeButtonView(ctx:Context,var maxN:Int=4,var listenerers:LinkedList
         var tappedBtns:ConcurrentLinkedQueue<BinaryTreeButton> = ConcurrentLinkedQueue()
         init {
             if(listeners.size > 0) {
-                var gap = (w/(2*(Math.pow(2.0,maxN.toDouble()).toFloat()-1)+1))
+                var gap = w/(2*maxN-2)
                 var hGap = h/(maxN+1)
-                var root = BinaryTreeButton(w/2,hGap,gap/2,listeners[0])
+                var root = BinaryTreeButton(w/2,hGap,gap,gap/4,listeners[0])
                 listeners.removeAt(0)
                 var queue = ArrayList<BinaryTreeButton>()
                 btns.add(root)
