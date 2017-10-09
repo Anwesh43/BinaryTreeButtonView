@@ -34,15 +34,19 @@ class BinaryTreeButtonView(ctx:Context,var maxN:Int=4,var listenerers:LinkedList
             canvas.translate(x,y)
             paint.color = Color.parseColor("#00E676")
             canvas.drawCircle(0f,0f,r,paint)
-            canvas.drawLine(0f,0f,left?.x?:x-x,left?.y?:y-y,paint)
-            canvas.drawLine(0f,0f,right?.x?:x-x,right?.y?:y-y,paint)
+            drawEdges(canvas,paint,1f)
             var color = Color.parseColor("#ef5350")
             paint.color = Color.argb(200,Color.red(color),Color.green(color),Color.blue(color))
             canvas.save()
             canvas.scale(state.scale,state.scale)
             canvas.drawCircle(0f,0f,r,paint)
             canvas.restore()
+            drawEdges(canvas,paint,state.scale)
             canvas.restore()
+        }
+        private fun drawEdges(canvas:Canvas,paint:Paint,scale:Float) {
+            canvas.drawLine(0f,0f,((left?.x?:x)-x)*scale,((left?.y?:y)-y)*scale,paint)
+            canvas.drawLine(0f,0f,((right?.x?:x)-x)*scale,((right?.y?:y)-y)*scale,paint)
         }
         fun addLeft(newListener:()->Unit,h:Float) {
             left = BinaryTreeButton(x-gap,y+h,gap*0.7f,r,newListener)
@@ -157,6 +161,8 @@ class BinaryTreeButtonView(ctx:Context,var maxN:Int=4,var listenerers:LinkedList
                 val h = canvas.height.toFloat()
                 var binaryTree = BinaryTree(w,h,view.listenerers,view.maxN)
                 animator = BinaryTreeAnimator(binaryTree,view)
+                paint.strokeWidth = Math.min(w,h)/60
+                paint.strokeCap = Paint.Cap.ROUND
             }
             animator?.draw(canvas,paint)
             animator?.update()
