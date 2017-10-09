@@ -32,9 +32,11 @@ class BinaryTreeButtonView(ctx:Context,var maxN:Int=4,var listenerers:LinkedList
         fun draw(canvas:Canvas,paint:Paint) {
             canvas.save()
             canvas.translate(x,y)
-            paint.color = Color.GREEN
+            paint.color = Color.parseColor("#00E676")
             canvas.drawCircle(0f,0f,r,paint)
-            var color = Color.GRAY
+            canvas.drawLine(0f,0f,left?.x?:x-x,left?.y?:y-y,paint)
+            canvas.drawLine(0f,0f,right?.x?:x-x,right?.y?:y-y,paint)
+            var color = Color.parseColor("#ef5350")
             paint.color = Color.argb(200,Color.red(color),Color.green(color),Color.blue(color))
             canvas.save()
             canvas.scale(state.scale,state.scale)
