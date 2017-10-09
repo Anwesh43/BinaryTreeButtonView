@@ -2,6 +2,7 @@ package com.anwesome.ui.binarytreebutton
 
 import android.app.Activity
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.view.*
 import android.graphics.*
 import java.util.*
@@ -42,10 +43,10 @@ class BinaryTreeButtonView(ctx:Context,var maxN:Int=4,var listenerers:LinkedList
             canvas.restore()
         }
         fun addLeft(newListener:()->Unit,h:Float) {
-            left = BinaryTreeButton(x-gap,y+h,gap*0.5f,r,newListener)
+            left = BinaryTreeButton(x-gap,y+h,gap*0.7f,r,newListener)
         }
         fun addRight(newListener:()->Unit,h:Float) {
-            right = BinaryTreeButton(x+gap,y+h,gap*0.5f,r,newListener)
+            right = BinaryTreeButton(x+gap,y+h,gap*0.7f,r,newListener)
         }
         fun update() {
             state.update()
@@ -73,9 +74,9 @@ class BinaryTreeButtonView(ctx:Context,var maxN:Int=4,var listenerers:LinkedList
         var tappedBtns:ConcurrentLinkedQueue<BinaryTreeButton> = ConcurrentLinkedQueue()
         init {
             if(listeners.size > 0) {
-                var gap = w/(2*maxN-2)
+                var gap = w/(Math.pow(2.0,maxN-1.0)-1).toFloat()
                 var hGap = h/(maxN+1)
-                var root = BinaryTreeButton(w/2,hGap,gap,gap/4,listeners[0])
+                var root = BinaryTreeButton(w/2,gap/5,1.5f*gap,gap/5,listeners[0])
                 listeners.removeAt(0)
                 var queue = ArrayList<BinaryTreeButton>()
                 btns.add(root)
@@ -86,7 +87,7 @@ class BinaryTreeButtonView(ctx:Context,var maxN:Int=4,var listenerers:LinkedList
                     queue.add(tree.left?:root)
                     btns.add(tree.left)
                     listeners.removeAt(0)
-                    if(listeners.size > 1) {
+                    if(listeners.size > 0) {
                         tree.addRight(listeners[0],hGap)
                         listeners.removeAt(0)
                         btns.add(tree.right)
@@ -169,6 +170,7 @@ class BinaryTreeButtonView(ctx:Context,var maxN:Int=4,var listenerers:LinkedList
         var parent:Activity?=null
         fun create(activity:Activity,vararg maxN:Int) {
             if(!added) {
+                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                 view = BinaryTreeButtonView(activity)
                 if(maxN.size == 1) {
                     view?.maxN = maxN[0]
